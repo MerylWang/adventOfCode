@@ -1011,14 +1011,13 @@ arr = input.splitlines()
 example_arr = example.splitlines()
 
 def get_sum(arr):
-    # print('n: ', len(arr))
     numbers_string = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
     numbers_map_string_to_value = {numbers_string[i]: i+1 for i in range(len(numbers_string))}
 
     result = 0 
+    
     # values can be either numerical or spelled out 
     for line in arr:
-        print('line: ', line)
         # look for the leftmost number 
         start = 0 
         end = len(line)-1
@@ -1039,7 +1038,6 @@ def get_sum(arr):
             start += 1
 
         # look for rightmost number 
-        start = 0
         while start < end+1:
             if line[end].isdigit():
                 right = int(line[end])
@@ -1062,5 +1060,8 @@ def get_sum(arr):
 # In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. 
 # Adding these together produces 281.
 # print(get_sum(example_arr))
+
+
 print(get_sum(arr))
+# 54649
 
