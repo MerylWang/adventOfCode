@@ -8,6 +8,12 @@ What do you get if you multiply these numbers together?
 
 Time:      7  15   30
 Distance:  9  40  200
+
+lower - you need to go at least 9mm in at most 7ms; 9/7 = ceil(1.28) = 2 mm/ms is lowest speed required 
+ - ceil(distance/time) = min_k
+   - k should only be higher than this, since time is cut short by k 
+higher - you run out of time to travel, despite high speed 
+  - max possible k = time allowed - 1
 """
 
 import math
@@ -16,19 +22,11 @@ import math
 example_input = """Time:      7  15   30
 Distance:  9  40  200"""
 
+input = """Time:        53     71     78     80
+Distance:   275   1181   1215   1524"""
+
 example_arr = example_input.split("\n")
-
-"""
-- start with brute force? 
-
-lower - you need to go at least 9mm in at most 7ms; 9/7 = ceil(1.28) = 2 mm/ms is lowest speed required 
- - ceil(distance/time) = min_k
-   - k should only be higher than this, since time is cut short by k 
-higher - you run out of time to travel, despite high speed 
-  - max possible k = time allowed - 1
-  
-
-"""
+arr = input.split("\n")
 
 def part_1(arr):
     race_time_limits = arr[0].split(":")[1].strip().split()
@@ -48,24 +46,21 @@ def part_1(arr):
 
         # find lower range of k 
         while lower < t:
-            if (t - lower) * lower >= d:
-                print("race ", i, ' lower: ', lower)
+            if (t - lower) * lower > d:
                 break
             else: 
                 lower += 1
 
         # find higher range of k
         while higher > 0:
-            if (t - higher) * higher >= d:
-                print("race ", i, ' higher: ', higher)
+            if (t - higher) * higher > d:
                 break
             else: 
                 higher -= 1
 
         # number of possible ways = higher - lower + 1
         num_ways = higher - lower + 1
-        print("race ", i, ' num_ways: ', num_ways)
-
+        # print(f'race {i} lower: {lower} higher: {higher} num_ways: {num_ways}')
 
         # multiply this for each race 
         res *= num_ways
@@ -74,17 +69,4 @@ def part_1(arr):
 
 # expected: 288 (4 * 8 * 9)
 print(part_1(example_arr))
-'''
-race  0  lower:  2
-race  0  higher:  5
-race  0  num_ways:  4
-race  1  lower:  4
-race  1  higher:  11
-race  1  num_ways:  8
-race  2  lower:  10
-race  2  higher:  20
-race  2  num_ways:  11
-352
-'''
-# race 3 is wrong - 
-# todo: find lower and higher manually 
+print(part_1(arr))
