@@ -1,16 +1,16 @@
+from collections import deque
 import pprint
+example_instructions = "LR"
+example_input = """11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)"""
+
 pp = pprint.PrettyPrinter(indent=4)
-
-instructions_1 = "RL"
-example_input_1 = """AAA = (BBB, CCC)
-BBB = (DDD, EEE)
-CCC = (ZZZ, GGG)
-DDD = (DDD, DDD)
-EEE = (EEE, EEE)
-GGG = (GGG, GGG)
-ZZZ = (ZZZ, ZZZ)"""
-
-# keep following the instructions until we find ZZZ, how many steps did it take?
 
 
 def get_graph(input: str):
@@ -23,21 +23,26 @@ def get_graph(input: str):
 
 
 def find_steps(instructions: str, graph: dict):
+    # nodes = start with all nodes that end in A
+    queue = deque([key for key in graph.keys() if key.endswith('A')])
     i, n = 0, len(instructions)
-    node = "AAA"
     steps = 0
 
-    while node != "ZZZ":
-        if i >= n:  # reset instructions
+    # while not all nodes end on Z, go to next step for node in nodes
+    while not all(node.endswith('Z') for node in queue):
+        print('queue: ', queue)
+        if i >= n:
             i = 0
-
         instruction = instructions[i]
-        neighbors = graph[node]
-        # execute instruction and set node
-        if instruction == "L":
-            node = neighbors[0]
-        else:
-            node = neighbors[1]
+
+        k = len(queue)
+        for _ in range(k):
+            node = queue.popleft()
+            neighbors = graph[node]
+            if instruction == "L":
+                queue.append(neighbors[0])
+            else:
+                queue.append(neighbors[1])
 
         i += 1
         steps += 1
@@ -45,18 +50,11 @@ def find_steps(instructions: str, graph: dict):
     return steps
 
 
-# pp.pprint(get_graph(example_input_1))
-# graph_1 = get_graph(example_input_1)
-# print(find_steps(instructions_1, graph_1))  # expected: 2
+# expected: 6
+# example_graph = get_graph(example_input)
+# print(find_steps(example_instructions, example_graph))
 
-# instructions_2 = "LLR"
-# example_input_2 = """AAA = (BBB, BBB)
-# BBB = (AAA, ZZZ)
-# ZZZ = (ZZZ, ZZZ)"""
-# graph_2 = get_graph(example_input_2)
-# print(find_steps(instructions_2, graph_2))  # expected: 6
-
-
+# this is taking too long so i'll punt
 instructions = "LLLLLLLRRRLRRRLRLRLRLRRLLRRRLRLLRRRLLRRLRRLRRLRLRRLRLRRRLRRLRLRRRLRRLRRLRLRRLLRLLRLRRRLRRLRLLLLRRLLLLRLRLRLRRRLRLRLLLRLRRRLRRRLRRRLRLRRLRRRLRLLLRLLRRLRRRLRRLRRLRRLRLRRRLRLRLRLLRRRLRRRLRRLRRRLLLRRLRRLRRRLRLRRRLRRRLRLRRLRRRLRLRRLRLRRLRRRLRLRRLRLLRRRLLRLRRLRRRLLLRLRRLRRRR"
 input = """DGK = (KVQ, XHR)
 KTC = (TVB, MTH)
